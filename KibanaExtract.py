@@ -96,9 +96,6 @@ class Kibana_Extract(object):
             "bool": {
               "must": [],
               "filter": [
-                {
-                  "match_all": {}
-                },
                 """+str(self.match_string)+"""
                 {
                   "range": {
