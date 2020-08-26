@@ -35,7 +35,7 @@ class Kibana_Extract(object):
         self.query_fields=query_fields
         self.query_sort=query_sort
         #
-        self.curl_string  = "curl -XGET http://" + str(self.username) + ":" +str(self.password) +"########"+str(self.index_string)+"/_search -H 'Content-Type: application/json'"
+        self.curl_string  = "curl -XGET http://" + str(self.username) + ":" +str(self.password) +"@lcf-uat-es-01.isg.directv.com:9200/"+str(self.index_string)+"/_search -H 'Content-Type: application/json'"
         fixed_interval_string=""" "{}" """.format(fixed_interval)
         #
         self.query_string = """ -d'{
