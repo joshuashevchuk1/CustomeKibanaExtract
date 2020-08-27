@@ -10,8 +10,8 @@ import json
 
 query_sort      = True
 query_name      = 'output_CHECK'
-username        = 'jq998g'
-password        = 'Goaly67!!!!'
+username        = #################
+password        = #################
 index_string    = 'incident-signature'
 size            = 5000
 fixed_interval  = '30s'
