@@ -10,8 +10,6 @@ import json
 
 query_sort      = True
 query_name      = 'output_CHECK'
-username        = #################
-password        = #################
 index_string    = 'incident-signature'
 size            = 5000
 fixed_interval  = '30s'
@@ -29,11 +27,13 @@ match_string    = """ {
             }
         }, """
 
+securityconfig  = configparser.RawConfigParser()
+Rawconfigfile   = securityconfig.read('security.cfg')
+Scanner_Check   = securityconfig.sections()
+username        = securityconfig.get("security","username")
+password        = securityconfig.get("security","password")
 Rawconfig       = configparser.RawConfigParser()
 Rawconfigfile   = Rawconfig.read('KibanaConfig.cfg')
-Scanner_Check   = Rawconfig.sections()
-username        = Rawconfig.get("security","username")
-password        = Rawconfig.get("security","username")
 query_sort      = Rawconfig.getboolean("query options","query_sort")
 query_name      = ast.literal_eval(Rawconfig.get("query","query_name"))
 query_fields    = ast.literal_eval(Rawconfig.get("query","query_fields"))
@@ -43,6 +43,7 @@ size            = Rawconfig.getint("query options","size")
 fixed_interval  = Rawconfig.get("query options","fixed_interval")
 index_string    = Rawconfig.get("query options","index_string")
 
+print('||||||||||||||||||||||||||||||||')
 print('==================')
 print('query_sort')
 print(str(query_sort))
@@ -57,4 +58,24 @@ print(query_fields)
 print(type(query_fields))
 print(len(query_fields))
 print('==================')
-
+print('query_time')
+print(query_time)
+print(type(query_time))
+print('==================')
+print('match_string')
+print(match_string)
+print(type(match_string))
+print('==================')
+print('size')
+print(size)
+print(type(size))
+print('==================')
+print('fixed_interval')
+print(fixed_interval)
+print(type(fixed_interval))
+print('==================')
+print('index_string')
+print(index_string)
+print(type(index_string))
+print('==================')
+print('||||||||||||||||||||||||||||||||')
