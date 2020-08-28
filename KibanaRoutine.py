@@ -13,7 +13,7 @@ Scanner_Check   = securityconfig.sections()
 username        = securityconfig.get("security","username")
 password        = securityconfig.get("security","password")
 Rawconfig       = configparser.RawConfigParser()
-Rawconfigfile   = Rawconfig.read('Kibana_CustomFilterMULTI.cfg')
+Rawconfigfile   = Rawconfig.read('Kibana_VisualConfig.cfg')
 query_sort      = Rawconfig.getboolean("query options","query_sort")
 query_name_list = ast.literal_eval(Rawconfig.get("query","query_name"))
 query_fields    = ast.literal_eval(Rawconfig.get("query","query_fields"))
@@ -22,6 +22,9 @@ match_string    = """{}""".format(ast.literal_eval(Rawconfig.get("query options"
 size            = Rawconfig.getint("query options","size")
 fixed_interval  = Rawconfig.get("query options","fixed_interval")
 index_string    = Rawconfig.get("query options","index_string")
+discover        = Rawconfig.getboolean("query type","discover")
+visual          = Rawconfig.getboolean("query type","visual")
+open_distro     = Rawconfig.getboolean("query type","open_distro")
 
 KE=KE.Kibana_Extract()
 for query_name_index in range(len((query_name_list))):
@@ -35,6 +38,9 @@ for query_name_index in range(len((query_name_list))):
                query_name_list[query_name_index],
                query_time_list[0],
                query_fields,
-               query_sort)
+               query_sort,
+               discover,
+               visual,
+               open_distro)
     KE.curlQuery()
-    KE.makeQueryCSV()
+    KE.makeQueryCSV_Visual()

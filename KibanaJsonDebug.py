@@ -8,7 +8,7 @@ import sys
 # use to debug json_file dict iteration
 #
 
-json_file='QA_CustomSignature_MULTI.json'
+json_file='output_VISUALSIMPLE.json'
 
 with open(str(json_file)) as f:
     resp_dict = json.load(f)
