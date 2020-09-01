@@ -27,7 +27,8 @@ class Kibana_Extract(object):
                 query_sort=False,
                 discover=True,
                 visual=False,
-                open_distro=False):
+                open_distro=False,
+                prod=False):
     #
         self.username=username
         self.password=password
@@ -42,10 +43,16 @@ class Kibana_Extract(object):
         self.discover=discover
         self.visual=visual
         self.open_distro=open_distro
+        self.prod=prod
         #
         if open_distro is False:
             #
-            self.curl_string  = "curl -XGET http://" + str(self.username) + ":" +str(self.password) +"@lcf-uat-es-01.isg.directv.com:9200/"+str(self.index_string)+"/_search -H 'Content-Type: application/json'"
+            if prod is False:
+                self.curl_string  = "curl -XGET http://" + str(self.username) + ":" +str(self.password) +"@lcf-uat-es-01.isg.directv.com:9200/"+str(self.index_string)+"/_search -H 'Content-Type: application/json'"
+            elif prod is True:
+                self.curl_string  = "curl -XGET http://" + str(self.username) + ":" +str(self.password) +"@lcf-prod-es-01.isg.directv.com:9200/"+str(self.index_string)+"/_search -H 'Content-Type: application/json'"
+                print("accessing production env")
+            #
         elif open_distro is True:
             #
             print('======================')
@@ -265,14 +272,12 @@ class Kibana_Extract(object):
 
         print('======================')
         print('initalized vars')
-        print(query_name)
-        print(query_time)
-        print(query_fields)
         print('======================')
         return username,password
     #
     def curlQuery(self):
         query_name=self.query_name
+        query_string=self.query_string
         os.system('chmod 775 ./*')
         #
         try:
@@ -284,9 +289,12 @@ class Kibana_Extract(object):
         username=self.username
         password=self.password
         curl_string=self.curl_string
-        query_string=self.query_string
+        #query_string=self.query_string
         os.system(""" """ + str(curl_string)+ """ """ + str(query_string)+ """ """ + """ | python -m json.tool > """ + str(query_name)+""".json """) 
         f.close()
+        print('+++++++++++++++++++++++++++++')
+        print('succesfully aquired json file')
+        print('+++++++++++++++++++++++++++++')
     #
     #
     def makeQueryCSV_Discover(self):
@@ -413,12 +421,10 @@ class Kibana_Extract(object):
         else:
             print('query_sort is set to False')
         #
-        try:
-            df.to_csv(str(query_name)+".csv",index=False)
-            print('csv generation passed successfully')
-        except:
-            print('exception occured on csv generation ')
-            traceback.print_exc()
+            try:
+                df.to_csv(str(query_name)+".csv",index=False)
+                print('csv generation passed successfully')
+            except:
+                print('exception occured on csv generation ')
+                traceback.print_exc()
         os.system('chmod 775 ./*')
-        #
-        print('test')
