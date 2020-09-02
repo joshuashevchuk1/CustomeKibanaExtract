@@ -336,6 +336,7 @@ class Kibana_Extract(object):
                 print('query_sort is set to True')
                 try:
                     df.sort_values(by=['incident-id'],inplace=True)
+                    df.sort_values(by=['signatureDefinitionName'],inplace=True)
                     print('query_sort passed successfully') 
                 except:
                     print('exception occured on query_sort')
