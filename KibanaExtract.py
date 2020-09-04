@@ -28,22 +28,26 @@ class Kibana_Extract(object):
                 discover=True,
                 visual=False,
                 open_distro=False,
-                prod=False):
+                prod=False,
+                fields_parameter=None,
+                CustomMarketID=False):
     #
-        self.username=username
-        self.password=password
-        self.index_string=index_string
-        self.size=size
-        self.fixed_interval=fixed_interval
-        self.match_string=match_string
-        self.query_name=query_name
-        self.query_time=query_time
-        self.query_fields=query_fields
-        self.query_sort=query_sort
-        self.discover=discover
-        self.visual=visual
-        self.open_distro=open_distro
-        self.prod=prod
+        self.username           = username
+        self.password           = password
+        self.index_string       = index_string
+        self.size               = size
+        self.fixed_interval     = fixed_interval
+        self.match_string       = match_string
+        self.query_name         = query_name
+        self.query_time         = query_time
+        self.query_fields       = query_fields
+        self.query_sort         = query_sort
+        self.discover           = discover
+        self.visual             = visual
+        self.open_distro        = open_distro
+        self.prod               = prod
+        self.fields_parameter   = fields_parameter
+        self.CustomMarketID     = CustomMarketID
         #
         if open_distro is False:
             #
@@ -156,12 +160,18 @@ class Kibana_Extract(object):
         elif visual is True:
         #
         #
-        #
+        #   
+            if fields_parameter is None:
+                fields_parameter= """ "field": "signatureName.keyword","""
+            #field_parameter= """ "field": "marketInfo_N1.name_N2.keyword","""
+            #field_parameter= """ "field": "marketInfo_N2.name_N2.keyword","""
+            #field_parameter= """ "field": "marketInfo_N3.name_N2.keyword","""
+
             self.query_string = """ -d'{
               "aggs": {
                 "2": {
                   "terms": {
-                    "field": "signatureName.keyword",
+                    """+str(fields_parameter)+"""
                     "order": {
                       "_count": "desc"
                     },
@@ -304,8 +314,10 @@ class Kibana_Extract(object):
         query_fields    = self.query_fields
         discover        = self.discover
         visual          = self.visual
+        CustomMarketID  = self.CustomMarketID
         #
         print(query_name)
+        print('CustomMarketID is '+str(CustomMarketID))
         json_file=str(query_name)+".json"
         with open(json_file) as f:
             resp_dict = json.load(f)
@@ -320,15 +332,40 @@ class Kibana_Extract(object):
             for j in range(len(query_fields)):
                 query_temp=[]
                 for i in range(resp_dict[u'hits'][u'total'][u'value']):
-                    #--
-                    query_temp.append(
+                #--
+                    if CustomMarketID is True:
+                        if query_fields[j] in 'incident-id':
+                            query_temp.append(
+                                resp_dict[u'hits'][u'hits'][i][u'_source'][u'{}'.format('incident-id')]
+                                )
+                            query_data.update(
+                                {str(query_fields[j]):query_temp}
+                                )
+                        else:
+                            market_temp_split=query_fields[j].split(".")
+                            try:
+                                query_temp.append(
+                                    resp_dict[u'hits'][u'hits'][i][u'_source'][u'{}'.format(market_temp_split[0])][u'{}'.format(market_temp_split[1])]
+                                    )
+                                query_data.update(
+                                        {str(query_fields[j]):query_temp}
+                                        )
+                            except:
+                                #no query data
+                                traceback.print_exc()
+                                query_data.update(
+                                        {str(query_fields[j]):'Missing'}
+                                        )
+                    else:          
+                        query_temp.append(
                             resp_dict[u'hits'][u'hits'][i][u'_source'][u'{}'.format(query_fields[j])]
                             )
-                    query_data.update(
+                        query_data.update(
                             {str(query_fields[j]):query_temp}
                             )
                     #--
-            #---
+                #---
+            #----
             #
             df=pd.DataFrame(data=query_data)
             #
@@ -336,7 +373,7 @@ class Kibana_Extract(object):
                 print('query_sort is set to True')
                 try:
                     df.sort_values(by=['incident-id'],inplace=True)
-                    df.sort_values(by=['signatureDefinitionName'],inplace=True)
+                    #df.sort_values(by=['signatureDefinitionName'],inplace=True)
                     print('query_sort passed successfully') 
                 except:
                     print('exception occured on query_sort')
