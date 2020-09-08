@@ -1,0 +1,2 @@
+MSG="$@"
+echo "MSG=$MSG"
