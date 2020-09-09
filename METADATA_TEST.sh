@@ -1,7 +1,7 @@
 ##!/bin/bash
 #========================================================================================================
 MSG= "$@"
-echo "MSG=$MSG"
+#echo "MSG=$MSG"
 
 ROLL_OVER_LOGS=`find -name "messages.*log*" | sort | grep -v Logs | grep -E "messages.log.|backup"`
 LAST_MSG_LOG=
@@ -356,7 +356,7 @@ if [ "$MSG" != "" ]; then
         fi
 
         echo "TRANSCODING_LINES=$TRANSCODING_LINES"
-        echo "MSG is $MSG"
+        #echo "MSG is $MSG"
 
 if [ "$TRANSCODING_LINES" != "" ] && [ $TRANSCODING_LINES -gt 3 ]; then
            IS_TRANSCODING_ON=true

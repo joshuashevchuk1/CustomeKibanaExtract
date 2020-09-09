@@ -5,6 +5,7 @@ import os
 import sys
 import json
 import shutil
+import glob
 
 class Kibana_Extract(object):
     #
@@ -454,7 +455,7 @@ class Kibana_Extract(object):
         df=df.rename(columns={'key':str(query_fields[0])})
         df=df.rename(columns={'doc_count':str(query_fields[1])})
         os.system('chmod 775 ./*')
-            #
+        #
         if query_sort is True:
             print('query_sort is set to True')
             try:
@@ -478,12 +479,54 @@ class Kibana_Extract(object):
         Log_Directory   = self.Log_Directory
         MetaData_Shell  = self.MetaData_Shell
         Siganture_Shell = self.Signature_Shell
-        print('performing Manaul_Extraction')
+        print('Running Log Extract')
         Working_Directory=os.getcwd()
+        #
         Log_Directory_Path=(os.getcwd()+'/'+str(Log_Directory))
         shutil.copy('./METADATA_TEST.sh',Log_Directory_Path)
+        #
         os.chdir(str(Log_Directory_Path))
-        print(os.getcwd())
-        os.chdir(str(Working_Directory))
-        print(os.getcwd())
-
+        os.system('chmod 775 ./*')
+        tgz_list=glob.glob("./*.tgz")
+        dir_list=next(os.walk('.'))[1]
+        #
+        if tgz_list == []:
+            print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+            print('')
+            print('no log files downloaded')
+            print('if this is the first time you running the log extraction query')
+            print('simply download the chosen files from the csv query') 
+            print('and put them into your log directory name '+str(Log_Directory))
+            print('')
+            print('it should be in the form of incident-id.tgz')
+            print('')
+            print('once at least one .tgz file is in '+str(Log_Directory))
+            print('run KibanaMain.py again and you should have text files in each tar output directory')
+            print('')
+            print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+            os.chdir(str(Working_Directory))         
+        else:
+            for index in range(len(tgz_list)):
+                    tgz_temp=tgz_list[index].split(".tgz")
+                    tgz_temp_string=tgz_temp[0]
+                    try:
+                        os.mkdir(str(tgz_temp_string))
+                    except:
+                        print('directory exists named '+str(tgz_temp_string))
+                    os.system('chmod 775 ./*')
+            for index in range(len(tgz_list)):
+                    tgz_temp=tgz_list[index].split(".tgz")
+                    tgz_temp_path=tgz_temp[0]
+                    tgz_temp_tar=str(tgz_list[index])
+                    os.system('tar -xzvf '+str(tgz_temp_tar)+' -C '+str(tgz_temp_path))
+                    os.system('chmod 775 ./*')
+            for index in range(len(dir_list)):
+                    Log_TarOutput_Path=str(Log_Directory_Path)+'/'+str(dir_list[index])
+                    shutil.copy('./METADATA_TEST.sh',Log_TarOutput_Path)
+                    os.chdir(str(Log_TarOutput_Path))
+                    os.system('chmod 775 ./*')
+                    if MetaData_Shell is True:
+                        os.system('./METADATA_TEST.sh > METADATA_TEST.txt')
+                        os.system('chmod 775 ./*')
+                    os.chdir(str(Log_Directory_Path))
+            os.chdir(str(Working_Directory)) 
