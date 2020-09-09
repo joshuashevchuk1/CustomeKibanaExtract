@@ -4,6 +4,7 @@ import traceback
 import os 
 import sys
 import json
+import shutil
 
 class Kibana_Extract(object):
     #
@@ -30,7 +31,10 @@ class Kibana_Extract(object):
                 open_distro=False,
                 prod=False,
                 fields_parameter=None,
-                CustomMarketID=False):
+                CustomMarketID=False,
+                MetaData_Shell=False,
+                Signature_Shell=False,
+                Log_Directory=None):
     #
         self.username           = username
         self.password           = password
@@ -48,6 +52,9 @@ class Kibana_Extract(object):
         self.prod               = prod
         self.fields_parameter   = fields_parameter
         self.CustomMarketID     = CustomMarketID
+        self.MetaData_Shell     = MetaData_Shell
+        self.Signature_Shell    = Signature_Shell
+        self.Log_Directory      = Log_Directory
         #
         if open_distro is False:
             #
@@ -466,3 +473,17 @@ class Kibana_Extract(object):
                 print('exception occured on csv generation ')
                 traceback.print_exc()
         os.system('chmod 775 ./*')
+
+    def LogExtract(self):
+        Log_Directory   = self.Log_Directory
+        MetaData_Shell  = self.MetaData_Shell
+        Siganture_Shell = self.Signature_Shell
+        print('performing Manaul_Extraction')
+        Working_Directory=os.getcwd()
+        Log_Directory_Path=(os.getcwd()+'/'+str(Log_Directory))
+        shutil.copy('./METADATA_TEST.sh',Log_Directory_Path)
+        os.chdir(str(Log_Directory_Path))
+        print(os.getcwd())
+        os.chdir(str(Working_Directory))
+        print(os.getcwd())
+

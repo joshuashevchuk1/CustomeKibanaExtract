@@ -30,8 +30,10 @@ Multiple_Def_PRE_QA_PROD = ast.literal_eval(MainConfig.get("main","Multiple PREQ
 Multiple_Def_SIG_QA_PROD = ast.literal_eval(MainConfig.get("main","Multiple SIGQAPROD"))
 Multiple_MN              = ast.literal_eval(MainConfig.get("main","Multiple MN"))
 Multiple_Def_META_QA     = ast.literal_eval(MainConfig.get("main","Multiple METAQA"))
+Kibana_Config            = ast.literal_eval(MainConfig.get("main","Kibana Config"))
 
-ConfigSets={'Multiple Rules':Multiple_Rules,
+ConfigSets={'Kibana Config':Kibana_Config,
+            'Multiple Rules':Multiple_Rules,
             'Custom Filters':Custom_Filters,
             'Multiple Def PRE QA':Multiple_Def_PRE_QA,
             'Multiple Def SIG QA':Multiple_Def_SIG_QA,
@@ -40,6 +42,10 @@ ConfigSets={'Multiple Rules':Multiple_Rules,
             'Multiple MN':Multiple_MN,
             'Multiple Def META QA':Multiple_Def_META_QA}
 
+#
+#   Uncomment to decide which test suite to use
+#
+Query_Test(ConfigSets['Kibana Config'],'Kibana Config')
 #Query_Test(ConfigSets['Multiple Rules'],'Multiple Rules')
 #Query_Test(ConfigSets['Custom Filters'],'Custom Filters')
 #Query_Test(ConfigSets['Multiple Def SIG QA'],'Multiple Def Sig QA')
@@ -47,4 +53,4 @@ ConfigSets={'Multiple Rules':Multiple_Rules,
 #Query_Test(ConfigSets['Multiple Def SIG QA PROD'],'Multiple Def Sig QA PROD')
 #Query_Test(ConfigSets['Multiple Def PRE QA PROD'],'Multiple Def Pre QA PROD')
 #Query_Test(ConfigSets['Multiple MN'],'Multiple MN')
-Query_Test(ConfigSets['Multiple Def META QA'],'Multiple Def META QA')
+#Query_Test(ConfigSets['Multiple Def META QA'],'Multiple Def META QA')
