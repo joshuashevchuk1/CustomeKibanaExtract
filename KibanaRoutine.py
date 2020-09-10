@@ -90,7 +90,7 @@ def GeneralQuery(configfile):
            if Log_Extraction_Flag is True:
                 if 'MetaData_Shell' in Rawconfig['post query']:
                     MetaData_Shell           = Rawconfig.getboolean("post query","MetaData_Shell")
-                if 'Siganture_Shell' in Rawconfig['post query']:
+                if 'Signature_Shell' in Rawconfig['post query']:
                     Signature_Shell          = Rawconfig.getboolean("post query","Signature_Shell")
        # set up log extraction folders
                 if 'Log_Directory' in  Rawconfig['post query']:
