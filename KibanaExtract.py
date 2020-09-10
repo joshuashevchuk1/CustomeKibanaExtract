@@ -478,12 +478,15 @@ class Kibana_Extract(object):
     def LogExtract(self):
         Log_Directory   = self.Log_Directory
         MetaData_Shell  = self.MetaData_Shell
-        Siganture_Shell = self.Signature_Shell
+        Signature_Shell = self.Signature_Shell
         print('Running Log Extract')
         Working_Directory=os.getcwd()
         #
         Log_Directory_Path=(os.getcwd()+'/'+str(Log_Directory))
+        # copy over shell scripts into the log 
         shutil.copy('./METADATA_TEST.sh',Log_Directory_Path)
+        shutil.copy('./Signature_Rule_Test.sh',Log_Directory_Path)
+        shutil.copy('./createMostRecentLog.sh',Log_Directory_Path)
         #
         os.chdir(str(Log_Directory_Path))
         os.system('chmod 775 ./*')
@@ -519,14 +522,23 @@ class Kibana_Extract(object):
                     tgz_temp_path=tgz_temp[0]
                     tgz_temp_tar=str(tgz_list[index])
                     os.system('tar -xzvf '+str(tgz_temp_tar)+' -C '+str(tgz_temp_path))
-                    os.system('chmod 775 ./*')
             for index in range(len(dir_list)):
                     Log_TarOutput_Path=str(Log_Directory_Path)+'/'+str(dir_list[index])
+                    os.chdir(str(Log_TarOutput_Path))
+                    os.system('chmod 775 ./*')
+                    os.chdir(str(Log_Directory_Path))
+                    shutil.copy('./createMostRecentLog.sh',Log_TarOutput_Path)
                     shutil.copy('./METADATA_TEST.sh',Log_TarOutput_Path)
+                    shutil.copy('./Signature_Rule_Test.sh',Log_TarOutput_Path)
                     os.chdir(str(Log_TarOutput_Path))
                     os.system('chmod 775 ./*')
                     if MetaData_Shell is True:
                         os.system('./METADATA_TEST.sh > METADATA_TEST.txt')
+                        os.system('chmod 775 ./*')
+                    if Signature_Shell is True:
+                        os.system('./createMostRecentLog.sh')
+                        os.system('chmod 775 ./*')
+                        os.system('./Signature_Rule_Test.sh > Signature_Rule_Test.txt')
                         os.system('chmod 775 ./*')
                     os.chdir(str(Log_Directory_Path))
             os.chdir(str(Working_Directory)) 
