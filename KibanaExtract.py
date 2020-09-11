@@ -35,7 +35,8 @@ class Kibana_Extract(object):
                 CustomMarketID=False,
                 MetaData_Shell=False,
                 Signature_Shell=False,
-                Log_Directory=None):
+                Log_Directory=None,
+                Skip_Tar=False):
     #
         self.username           = username
         self.password           = password
@@ -56,6 +57,7 @@ class Kibana_Extract(object):
         self.MetaData_Shell     = MetaData_Shell
         self.Signature_Shell    = Signature_Shell
         self.Log_Directory      = Log_Directory
+        self.Skip_Tar           = Skip_Tar
         #
         if open_distro is False:
             #
@@ -364,13 +366,19 @@ class Kibana_Extract(object):
                                 query_data.update(
                                         {str(query_fields[j]):'Missing'}
                                         )
-                    else:          
-                        query_temp.append(
-                            resp_dict[u'hits'][u'hits'][i][u'_source'][u'{}'.format(query_fields[j])]
-                            )
-                        query_data.update(
-                            {str(query_fields[j]):query_temp}
-                            )
+                    else:
+                        try:
+                            query_temp.append(
+                                resp_dict[u'hits'][u'hits'][i][u'_source'][u'{}'.format(query_fields[j])]
+                                )
+                            query_data.update(
+                                {str(query_fields[j]):query_temp}
+                                )
+                        except:
+                            query_temp.append('None')
+                            query_data.update(
+                                    {str(query_fields[j]):query_temp}
+                                    )
                     #--
                 #---
             #----
@@ -479,6 +487,7 @@ class Kibana_Extract(object):
         Log_Directory   = self.Log_Directory
         MetaData_Shell  = self.MetaData_Shell
         Signature_Shell = self.Signature_Shell
+        Skip_Tar        = self.Skip_Tar
         print('Running Log Extract')
         Working_Directory=os.getcwd()
         #
@@ -521,7 +530,11 @@ class Kibana_Extract(object):
                     tgz_temp=tgz_list[index].split(".tgz")
                     tgz_temp_path=tgz_temp[0]
                     tgz_temp_tar=str(tgz_list[index])
-                    os.system('tar -xzvf '+str(tgz_temp_tar)+' -C '+str(tgz_temp_path))
+                    if Skip_Tar is False:
+                        print('undergoing log untar process')
+                        os.system('tar -xzvf '+str(tgz_temp_tar)+' -C '+str(tgz_temp_path))
+                    else:
+                        print('skipping log untar process')
             for index in range(len(dir_list)):
                     Log_TarOutput_Path=str(Log_Directory_Path)+'/'+str(dir_list[index])
                     os.chdir(str(Log_TarOutput_Path))

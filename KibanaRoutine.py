@@ -15,6 +15,7 @@ def GeneralQuery(configfile):
     CustomMarketID              = False
     MetaData_Shell              = False
     Signature_Shell             = False
+    Skip_Tar                    = False
     Log_Directory               = None
     # get security parameters
     securityconfig              = configparser.RawConfigParser()
@@ -95,7 +96,9 @@ def GeneralQuery(configfile):
        # set up log extraction folders
                 if 'Log_Directory' in  Rawconfig['post query']:
                     Log_Directory = Rawconfig.get("post query","Log_Directory")
-                               
+                if 'Skip_Tar' in Rawconfig['post query']:
+                    Skip_Tar    = Rawconfig.getboolean("post query","Skip_Tar")
+
     for query_name_index in range(len((query_name_list))):
         KE.getvars(username,
                    password,
@@ -115,7 +118,8 @@ def GeneralQuery(configfile):
                    CustomMarketID,
                    MetaData_Shell,
                    Signature_Shell,
-                   Log_Directory)
+                   Log_Directory,
+                   Skip_Tar)
         KE.curlQuery()
         if discover is True:
             print(' this is a discover query')

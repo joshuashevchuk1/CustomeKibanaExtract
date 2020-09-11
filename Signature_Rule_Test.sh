@@ -15,3 +15,6 @@ echo "$MCOFATAL_var"
 #
 DiskDown_var="$(grep 'DISK DOWN' MOST_RECENT_LOG)"
 echo "$DiskDown_var"
+
+Process_var="$(grep 'processDemuxEvents:DEMUX_EVENT_DATA_DISCARDED' CONSOLIDATE_MESSAGES)"
+echo "$Process_var"
