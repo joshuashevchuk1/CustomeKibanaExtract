@@ -16,7 +16,9 @@ def GeneralQuery(configfile):
     MetaData_Shell              = False
     Signature_Shell             = False
     Skip_Tar                    = False
+    dms_data                    = False
     Log_Directory               = None
+    query_sort_string           = None
     # get security parameters
     securityconfig              = configparser.RawConfigParser()
     Rawconfigfile               = securityconfig.read('security.cfg')
@@ -69,11 +71,23 @@ def GeneralQuery(configfile):
         query_time_list         = ast.literal_eval(Rawconfig.get("query","query_time"))
     if query_options_flag is True:
         print('query options flag is true')
+        dms_data                = Rawconfig.getboolean("query options","dms_data")
         match_string            = """{}""".format(ast.literal_eval(Rawconfig.get("query options","match_string")))
         size                    = Rawconfig.getint("query options","size")
         fixed_interval          = Rawconfig.get("query options","fixed_interval")
         index_string            = Rawconfig.get("query options","index_string")
         query_sort              = Rawconfig.getboolean("query options","query_sort")
+        if query_sort is True:
+            if 'query_sort_string' in Rawconfig['query options']:
+                query_sort_string   = Rawconfig.get("query options","query_sort_string")
+            else:
+                print('')
+                print('query sort string flag set to true')
+                print('but no query sort string defined')
+                print('')
+                query_sort_string   = None
+        else:
+            print('query sort string flag set to false')
     if query_type_flag is True:
         print('query type flag is true')
         discover                = Rawconfig.getboolean("query type","discover")
@@ -109,7 +123,9 @@ def GeneralQuery(configfile):
                    query_name_list[query_name_index],
                    query_time_list[0],
                    query_fields,
+                   dms_data,
                    query_sort,
+                   query_sort_string,
                    discover,
                    visual,
                    open_distro,

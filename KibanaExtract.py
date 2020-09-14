@@ -26,7 +26,9 @@ class Kibana_Extract(object):
                 query_name,
                 query_time,
                 query_fields,
+                dms_data=False,
                 query_sort=False,
+                query_sort_string=None,
                 discover=True,
                 visual=False,
                 open_distro=False,
@@ -37,7 +39,7 @@ class Kibana_Extract(object):
                 Signature_Shell=False,
                 Log_Directory=None,
                 Skip_Tar=False):
-    #
+        #
         self.username           = username
         self.password           = password
         self.index_string       = index_string
@@ -48,6 +50,7 @@ class Kibana_Extract(object):
         self.query_time         = query_time
         self.query_fields       = query_fields
         self.query_sort         = query_sort
+        self.query_sort_string  = query_sort_string
         self.discover           = discover
         self.visual             = visual
         self.open_distro        = open_distro
@@ -58,6 +61,7 @@ class Kibana_Extract(object):
         self.Signature_Shell    = Signature_Shell
         self.Log_Directory      = Log_Directory
         self.Skip_Tar           = Skip_Tar
+        self.dms_data           = dms_data
         #
         if open_distro is False:
             #
@@ -74,96 +78,169 @@ class Kibana_Extract(object):
             print('======================')
             #
         fixed_interval_string=""" "{}" """.format(fixed_interval)
-        #
+
         if discover is True:
         #
         #
         #
-            self.query_string = """ -d'{
-              "version": true,
-              "size": """+str(self.size)+""",
-              "sort": [
-                {
-                  "zipTimestamp": {
-                    "order": "desc",
-                    "unmapped_type": "boolean"
-                  }
-                }
-              ],
-              "_source": {
-                "excludes": []
-              },
-              "aggs": {
-                "2": {
-                  "date_histogram": {
-                    "field": "zipTimestamp",
-                    "fixed_interval": """+str(fixed_interval_string)+""",
-                    "time_zone": "America/Los_Angeles",
-                    "min_doc_count": 1
-                  }
-                }
-              },
-              "stored_fields": [
-                "*"
-              ],
-              "script_fields": {},
-              "docvalue_fields": [
-                {
-                  "field": "@timestamp",
-                  "format": "date_time"
-                },
-                {
-                  "field": "crashTimestamp",
-                  "format": "date_time"
-                },
-                {
-                  "field": "metadaCollectedTimestamp",
-                  "format": "date_time"
-                },
-                {
-                  "field": "rebootTimestamp",
-                  "format": "date_time"
-                },
-                {
-                  "field": "sendDate",
-                  "format": "date_time"
-                },
-                {
-                  "field": "zipTimestamp",
-                  "format": "date_time"
-                }
-              ],
-              "query": {
-                "bool": {
-                  "must": [],
-                  "filter": [
-                    """+str(self.match_string)+"""
-                    {
-                      "range": {
-                        "zipTimestamp": {
-                          "format": "strict_date_optional_time",
-                          """+str(self.query_time)+"""
+            if dms_data is True:
+                print('dms data is True')
+                self.query_string = """ -d'{
+                      "version": true,
+                      "size":  """+str(self.size)+""",
+                      "sort": [
+                        {
+                          "time": {
+                            "order": "desc",
+                            "unmapped_type": "boolean"
+                          }
                         }
+                      ],
+                      "_source": {
+                        "excludes": []
+                      },
+                      "aggs": {
+                        "2": {
+                          "date_histogram": {
+                            "field": "time",
+                            "fixed_interval": """+str(fixed_interval_string)+""",
+                            "time_zone": "America/Los_Angeles",
+                            "min_doc_count": 1
+                          }
+                        }
+                      },
+                      "stored_fields": [
+                        "*"
+                      ],
+                      "script_fields": {},
+                      "docvalue_fields": [
+                        {
+                          "field": "date",
+                          "format": "date_time"
+                        },
+                        {
+                          "field": "time",
+                          "format": "date_time"
+                        }
+                      ],
+                      "query": {
+                        "bool": {
+                          "must": [],
+                          "filter": [
+                            """+str(self.match_string)+"""
+                            {
+                              "range": {
+                                "time": {
+                                  "format": "strict_date_optional_time",
+                                   """+str(self.query_time)+"""
+                                  }
+                              }
+                            }
+                          ],
+                          "should": [],
+                          "must_not": []
+                        }
+                      },
+                      "highlight": {
+                        "pre_tags": [
+                          "@kibana-highlighted-field@"
+                        ],
+                        "post_tags": [
+                          "@/kibana-highlighted-field@"
+                        ],
+                        "fields": {
+                          "*": {}
+                        },
+                        "fragment_size": 2147483647
+                      }
+                }' """
+            else:
+                print('discover is True')
+                self.query_string = """ -d'{
+                  "version": true,
+                  "size": """+str(self.size)+""",
+                  "sort": [
+                    {
+                      "zipTimeStamp": {
+                        "order": "desc",
+                        "unmapped_type": "boolean"
                       }
                     }
                   ],
-                  "should": [],
-                  "must_not": []
-                }
-              },
-              "highlight": {
-                "pre_tags": [
-                  "@kibana-highlighted-field@"
-                ],
-                "post_tags": [
-                  "@/kibana-highlighted-field@"
-                ],
-                "fields": {
-                  "*": {}
-                },
-                "fragment_size": 2147483647
-              }
-            }' """
+                  "_source": {
+                    "excludes": []
+                  },
+                  "aggs": {
+                    "2": {
+                      "date_histogram": {
+                        "field": "zipTimestamp",
+                        "fixed_interval": """+str(fixed_interval_string)+""",
+                        "time_zone": "America/Los_Angeles",
+                        "min_doc_count": 1
+                      }
+                    }
+                  },
+                  "stored_fields": [
+                    "*"
+                  ],
+                  "script_fields": {},
+                  "docvalue_fields": [
+                    {
+                      "field": "@timestamp",
+                      "format": "date_time"
+                    },
+                    {
+                      "field": "crashTimestamp",
+                      "format": "date_time"
+                    },
+                    {
+                      "field": "metadaCollectedTimestamp",
+                      "format": "date_time"
+                    },
+                    {
+                      "field": "rebootTimestamp",
+                      "format": "date_time"
+                    },
+                    {
+                      "field": "sendDate",
+                      "format": "date_time"
+                    },
+                    {
+                      "field": "zipTimestamp",
+                      "format": "date_time"
+                    }
+                  ],
+                  "query": {
+                    "bool": {
+                      "must": [],
+                      "filter": [
+                        """+str(self.match_string)+"""
+                        {
+                          "range": {
+                            "zipTimestamp": {
+                              "format": "strict_date_optional_time",
+                              """+str(self.query_time)+"""
+                            }
+                          }
+                        }
+                      ],
+                      "should": [],
+                      "must_not": []
+                    }
+                  },
+                  "highlight": {
+                    "pre_tags": [
+                      "@kibana-highlighted-field@"
+                    ],
+                    "post_tags": [
+                      "@/kibana-highlighted-field@"
+                    ],
+                    "fields": {
+                      "*": {}
+                    },
+                    "fragment_size": 2147483647
+                  }
+                }' """
         #
         #
         #
@@ -319,12 +396,13 @@ class Kibana_Extract(object):
     #
     def makeQueryCSV_Discover(self):
         #
-        query_sort      = self.query_sort
-        query_name      = self.query_name
-        query_fields    = self.query_fields
-        discover        = self.discover
-        visual          = self.visual
-        CustomMarketID  = self.CustomMarketID
+        query_sort          = self.query_sort
+        query_sort_string   = self.query_sort_string
+        query_name          = self.query_name
+        query_fields        = self.query_fields
+        discover            = self.discover
+        visual              = self.visual
+        CustomMarketID      = self.CustomMarketID
         #
         print(query_name)
         print('CustomMarketID is '+str(CustomMarketID))
@@ -386,14 +464,25 @@ class Kibana_Extract(object):
             df=pd.DataFrame(data=query_data)
             #
             if query_sort is True:
+            #
                 print('query_sort is set to True')
-                try:
-                    df.sort_values(by=['incident-id'],inplace=True)
-                    #df.sort_values(by=['signatureDefinitionName'],inplace=True)
-                    print('query_sort passed successfully') 
-                except:
-                    print('exception occured on query_sort')
-                    traceback.print_exc()
+                if query_sort_string is None:
+                    try:
+                        df.sort_values(by=['incident-id'],inplace=True)
+                        #df.sort_values(by=['signatureDefinitionName'],inplace=True)
+                        print('query_sort passed successfully') 
+                    except:
+                        print('exception occured on query_sort')
+                        traceback.print_exc()
+                else:
+                    try:
+                        print('custom query_sort_string found')
+                        df.sort_values(by=[str(query_sort_string)],inplace=True)
+                        print('query_sort passed successfully')
+                    except:
+                        print('exception occured on query_sort_string')
+                        traceback.print_exc()
+            #
             else:
                 print('query_sort is set to False')
             #
