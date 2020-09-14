@@ -33,6 +33,7 @@ Multiple_Def_META_QA     = ast.literal_eval(MainConfig.get("main","Multiple META
 Kibana_Config            = ast.literal_eval(MainConfig.get("main","Kibana Config"))
 Getter_Logs              = ast.literal_eval(MainConfig.get("main","Getter Logs"))
 Logs_Prod                = ast.literal_eval(MainConfig.get("main","Logs Prod"))
+Nobb_Logs                = ast.literal_eval(MainConfig.get("main","Nobb Logs"))
 
 ConfigSets={'Kibana Config':Kibana_Config,
             'Multiple Rules':Multiple_Rules,
@@ -44,7 +45,8 @@ ConfigSets={'Kibana Config':Kibana_Config,
             'Multiple MN':Multiple_MN,
             'Multiple Def META QA':Multiple_Def_META_QA,
             'Getter Logs':Getter_Logs,
-            'Logs Prod':Logs_Prod}
+            'Logs Prod':Logs_Prod,
+            'Nobb Logs':Nobb_Logs}
 
 #
 #   Uncomment to decide which test suite to use
@@ -59,4 +61,5 @@ ConfigSets={'Kibana Config':Kibana_Config,
 #Query_Test(ConfigSets['Multiple MN'],'Multiple MN')
 #Query_Test(ConfigSets['Multiple Def META QA'],'Multiple Def META QA')
 #Query_Test(ConfigSets['Getter Logs'],'Getter Logs')
-Query_Test(ConfigSets['Logs Prod'],'Logs Prod')
+#Query_Test(ConfigSets['Logs Prod'],'Logs Prod')
+Query_Test(ConfigSets['Nobb Logs'],'Nobb Logs')
