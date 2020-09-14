@@ -32,6 +32,7 @@ Multiple_MN              = ast.literal_eval(MainConfig.get("main","Multiple MN")
 Multiple_Def_META_QA     = ast.literal_eval(MainConfig.get("main","Multiple METAQA"))
 Kibana_Config            = ast.literal_eval(MainConfig.get("main","Kibana Config"))
 Getter_Logs              = ast.literal_eval(MainConfig.get("main","Getter Logs"))
+Logs_Prod                = ast.literal_eval(MainConfig.get("main","Logs Prod"))
 
 ConfigSets={'Kibana Config':Kibana_Config,
             'Multiple Rules':Multiple_Rules,
@@ -42,7 +43,8 @@ ConfigSets={'Kibana Config':Kibana_Config,
             'Multiple Def SIG QA PROD':Multiple_Def_SIG_QA_PROD,
             'Multiple MN':Multiple_MN,
             'Multiple Def META QA':Multiple_Def_META_QA,
-            'Getter Logs':Getter_Logs}
+            'Getter Logs':Getter_Logs,
+            'Logs Prod':Logs_Prod}
 
 #
 #   Uncomment to decide which test suite to use
@@ -56,4 +58,5 @@ ConfigSets={'Kibana Config':Kibana_Config,
 #Query_Test(ConfigSets['Multiple Def PRE QA PROD'],'Multiple Def Pre QA PROD')
 #Query_Test(ConfigSets['Multiple MN'],'Multiple MN')
 #Query_Test(ConfigSets['Multiple Def META QA'],'Multiple Def META QA')
-Query_Test(ConfigSets['Getter Logs'],'Getter Logs')
+#Query_Test(ConfigSets['Getter Logs'],'Getter Logs')
+Query_Test(ConfigSets['Logs Prod'],'Logs Prod')
