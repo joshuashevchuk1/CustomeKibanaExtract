@@ -35,6 +35,7 @@ Getter_Logs              = ast.literal_eval(MainConfig.get("main","Getter Logs")
 Logs_Prod                = ast.literal_eval(MainConfig.get("main","Logs Prod"))
 Nobb_Logs                = ast.literal_eval(MainConfig.get("main","Nobb Logs"))
 Dms_Data                 = ast.literal_eval(MainConfig.get("main","Dms Data"))
+Client_Con               = ast.literal_eval(MainConfig.get("main","Client Con"))
 
 ConfigSets={'Kibana Config':Kibana_Config,
             'Multiple Rules':Multiple_Rules,
@@ -48,7 +49,8 @@ ConfigSets={'Kibana Config':Kibana_Config,
             'Getter Logs':Getter_Logs,
             'Logs Prod':Logs_Prod,
             'Nobb Logs':Nobb_Logs,
-            'Dms Data':Dms_Data}
+            'Dms Data':Dms_Data,
+            'Client Con':Client_Con}
 
 #
 #   Uncomment to decide which test suite to use
@@ -65,4 +67,5 @@ ConfigSets={'Kibana Config':Kibana_Config,
 #Query_Test(ConfigSets['Getter Logs'],'Getter Logs')
 #Query_Test(ConfigSets['Logs Prod'],'Logs Prod')
 #Query_Test(ConfigSets['Nobb Logs'],'Nobb Logs')
-Query_Test(ConfigSets['Dms Data'],'Dms Data')
+#Query_Test(ConfigSets['Dms Data'],'Dms Data')
+Query_Test(ConfigSets['Client Con'],'Client Con')

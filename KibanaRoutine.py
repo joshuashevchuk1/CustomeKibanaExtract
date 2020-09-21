@@ -71,7 +71,8 @@ def GeneralQuery(configfile):
         query_time_list         = ast.literal_eval(Rawconfig.get("query","query_time"))
     if query_options_flag is True:
         print('query options flag is true')
-        dms_data                = Rawconfig.getboolean("query options","dms_data")
+        if 'dms_data' in Rawconfig['query options']:
+            dms_data                = Rawconfig.getboolean("query options","dms_data")
         match_string            = """{}""".format(ast.literal_eval(Rawconfig.get("query options","match_string")))
         size                    = Rawconfig.getint("query options","size")
         fixed_interval          = Rawconfig.get("query options","fixed_interval")
